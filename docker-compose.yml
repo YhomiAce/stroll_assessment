@@ -1,0 +1,49 @@
+services:
+  app: 
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 6000:6000
+    expose:
+      - 6000
+    command: yarn dev
+    depends_on:
+      - database
+      - redis_db
+    networks:
+      - stroll_net
+    volumes:
+      - .:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
+    
+  database:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    restart: always
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - question_data:/var/lib/postgressql/data
+    networks:
+      - stroll_net
+
+  redis_db:  
+    image: redis:6.2-alpine
+    ports:  
+      - ${REDIS_PORT}:6379
+    volumes:
+      - cache_data:/data
+    networks:
+      - stroll_net
+
+volumes:
+  question_data:
+  cache_data:
+
+networks:
+  stroll_net:
+    driver: bridge
