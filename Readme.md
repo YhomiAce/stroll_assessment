@@ -26,6 +26,11 @@ Implementation
 
 - Because questions for a region remain constant for a full cycle, it's wasteful to hit the database for every user request. Instead, Redis acts as a caching layer in Node.js. When a user asks for the current question, the system checks Redis first. If the question is already cached, it returns the cached version; otherwise, it fetches the question from the database and stores it in Redis.
 
+4. Implement the Scheduler:
+
+- Set up a cron job to to check for the start of a new cycle. 
+- Update the Cycles table and the Cycle Cache when a new cycle starts.
+
 Scalability Measures
 
 1. Database Indexing: optimizes query performance.
