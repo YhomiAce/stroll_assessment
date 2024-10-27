@@ -65,6 +65,21 @@ exports.setRegionCycleQuestion = async (region) => {
     },
     order: [["id", "ASC"]],
   });
-  await this.cacheRegionQuestion(region, questionSets[0]);
-  return questionSets[0];
+  const question = questionSets[0]; // select the first question
+  // Get the current date
+  const startDate = new Date();
+
+  // Add 7 days to the current date
+  const endDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+  // Create the cycle for the region
+  await Cycle.create({
+    region,
+    questionId: question.id,
+    startDate,
+    endDate,
+  });
+
+  await this.cacheRegionQuestion(region, question);
+  return question;
 };
